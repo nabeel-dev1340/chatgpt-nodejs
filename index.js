@@ -2,7 +2,7 @@ import { ChatGPTAPI } from "chatgpt";
 import dotenv from "dotenv";
 import Express from "express";
 import bodyParser from "body-parser";
-
+const PORT = process.env.PORT || 3030;
 dotenv.config();
 
 const app = Express();
@@ -24,6 +24,6 @@ app.get("/", async (req, res) => {
   res.send(data.text);
 });
 
-app.listen(3000, () => {
-  console.log("app listening on port 3000!");
+app.listen(PORT, () => {
+  console.log("app listening on port", PORT);
 });
