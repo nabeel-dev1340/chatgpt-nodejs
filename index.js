@@ -15,7 +15,8 @@ app.get("/", async (req, res) => {
   const EQUIPMENT = req.query.equipment;
   const MUSCLE = req.query.muscle;
 
-  const Prompt = `Give me a ${TIME} minute workout plan for ${MUSCLE} at ${LOCATION} with ${EQUIPMENT}. Please include a warmup and cooldown. Also specify the time period for each exercise.`;
+  const Prompt = `
+  Give me a ${TIME} minute workout plan for ${MUSCLE} at ${LOCATION} with ${EQUIPMENT}. Please include a warmup and cooldown. Also specify the time period for each exercise. Give the results in json format with keys Warm up:  Exercises:  and Cool down. All these keys have array entry`;
   const api = new ChatGPTAPI({
     apiKey: process.env.OPENAI_API_KEY,
   });
