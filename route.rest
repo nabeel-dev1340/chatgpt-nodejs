@@ -1,0 +1,1 @@
+GET http://localhost:3000/?time=45&location=gym&equipment=dumbbells&muscle=biceps
