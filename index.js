@@ -24,6 +24,10 @@ app.get("/", async (req, res) => {
   res.send(data.text);
 });
 
+app.get("/hello", async (req, res) => {
+  res.send("Hello World");
+});
+
 app.listen(PORT, () => {
   console.log("app listening on port", PORT);
 });
