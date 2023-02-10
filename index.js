@@ -1,9 +1,12 @@
-import { ChatGPTAPI } from "chatgpt";
 import dotenv from "dotenv";
 import Express from "express";
 import bodyParser from "body-parser";
+import axios from "axios";
 const PORT = process.env.PORT || 3030;
 dotenv.config();
+
+const API_KEY = process.env.OPENAI_API_KEY;
+const MODEL = "text-davinci-003";
 
 const app = Express();
 app.use(bodyParser.json());
@@ -15,13 +18,29 @@ app.get("/", async (req, res) => {
   const EQUIPMENT = req.query.equipment;
   const MUSCLE = req.query.muscle;
 
-  const Prompt = `
+  try {
+    const Prompt = `
   Give me a ${TIME} minute workout plan for ${MUSCLE} at ${LOCATION} with ${EQUIPMENT}. Please include a warmup and cooldown. Also specify the time period for each exercise. Give the results in json format with keys Warm up:  Exercises:  and Cool down. All these keys have array entry`;
-  const api = new ChatGPTAPI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-  const data = await api.sendMessage(Prompt);
-  res.send(data.text);
+    const response = await axios.post(
+      "https://api.openai.com/v1/completions",
+      {
+        model: MODEL,
+        prompt: Prompt,
+        temperature: 0,
+        max_tokens: 400,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${API_KEY}`,
+        },
+      }
+    );
+
+    res.send(response.data.choices[0].text);
+  } catch (error) {
+    throw error;
+  }
 });
 
 app.get("/hello", async (req, res) => {
