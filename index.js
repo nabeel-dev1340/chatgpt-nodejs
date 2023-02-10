@@ -10,7 +10,7 @@ dotenv.config();
 const API_KEY = process.env.OPENAI_API_KEY;
 const MODEL = "text-davinci-003";
 const allowedOrigins = [
-  "https://wild-gray-goshawk-wrap.cyclic.app",
+  "https://workout-ai-mocha.vercel.app",
   "http://localhost:3000",
 ];
 
