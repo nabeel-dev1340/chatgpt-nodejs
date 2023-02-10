@@ -1,39 +1,20 @@
-import dotenv from "dotenv";
 import Express from "express";
 import bodyParser from "body-parser";
 import axios from "axios";
 import cors from "cors";
+import { MongoClient } from "mongodb";
+import { URL, MODEL, API_KEY, FORMAT, PORT } from "./constants/index.js";
 import removeUnwantedChars from "./helpers/removeUnwanted.js";
 
-const PORT = process.env.PORT || 3030;
-dotenv.config();
-
-const API_KEY = process.env.OPENAI_API_KEY;
-const MODEL = "text-davinci-003";
-const FORMAT = `{
-  "Warm Up": [
-  {
-  "Exercise": string,
-  "Time": string
-  },
-  ...
-  ],
-  "Exercises": [
-  {
-  "Exercise": string,
-  "Sets": string,
-  "Reps": string
-  },
-  ...
-  ],
-  "Cool Down": [
-  {
-  "Exercise": string,
-  "Time": string
-  },
-  ...
-  ]
-  }`;
+// connecting to db
+const client = new MongoClient(URL, { useNewUrlParser: true });
+client.connect((err) => {
+  if (err) {
+    console.log("Error connecting to db", err);
+  } else {
+    console.log("Connected successfully to db");
+  }
+});
 
 const app = Express();
 // middleware
@@ -53,26 +34,45 @@ app.get("/", async (req, res) => {
   const EQUIPMENT = req.query.equipment;
   const MUSCLE = req.query.muscle;
 
+  const key = `${MUSCLE}-${TIME}-${LOCATION}-${EQUIPMENT}`;
+
   try {
-    const Prompt = `
+    // checking if data already exists
+    const db = client.db("test");
+    const workouts = db.collection("workouts");
+    const workoutPlanData = await workouts.findOne({ key });
+
+    if (workoutPlanData) {
+      res.send(workoutPlanData);
+    } else {
+      const Prompt = `
   Give me a ${TIME} minute workout plan for ${MUSCLE} at ${LOCATION} with ${EQUIPMENT}. Please include a warmup and cooldown. Also specify the time period for each exercise. Give the result in following json format:${FORMAT}. All these keys have array entry and please provide a valid json object`;
-    const response = await axios.post(
-      "https://api.openai.com/v1/completions",
-      {
-        model: MODEL,
-        prompt: Prompt,
-        temperature: 0,
-        max_tokens: 400,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${API_KEY}`,
+      const response = await axios.post(
+        "https://api.openai.com/v1/completions",
+        {
+          model: MODEL,
+          prompt: Prompt,
+          temperature: 0,
+          max_tokens: 400,
         },
-      }
-    );
-    const cleanedRes = removeUnwantedChars(response.data.choices[0].text);
-    res.send(JSON.parse(cleanedRes));
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${API_KEY}`,
+          },
+        }
+      );
+      const cleanedRes = removeUnwantedChars(response.data.choices[0].text);
+      const workoutPlan = JSON.parse(cleanedRes);
+
+      // inserting data into db
+      workoutPlan.key = `${key}`;
+      await workouts.insertOne(workoutPlan);
+
+      console.log("Data Logged.");
+
+      res.send(workoutPlan);
+    }
   } catch (error) {
     throw error;
   }
