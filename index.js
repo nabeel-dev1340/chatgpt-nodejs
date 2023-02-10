@@ -3,6 +3,7 @@ import Express from "express";
 import bodyParser from "body-parser";
 import axios from "axios";
 import cors from "cors";
+import removeUnwantedChars from "./helpers/removeUnwanted.js";
 
 const PORT = process.env.PORT || 3030;
 dotenv.config();
@@ -14,7 +15,13 @@ const app = Express();
 // middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "PUT", "POST", "DELETE"],
+    credentials: false,
+  })
+);
 
 app.get("/", async (req, res) => {
   const TIME = req.query.time;
@@ -40,7 +47,8 @@ app.get("/", async (req, res) => {
         },
       }
     );
-    res.send(JSON.parse(response.data.choices[0].text));
+    const cleanedRes = removeUnwantedChars(response.data.choices[0].text);
+    res.send(JSON.parse(cleanedRes));
   } catch (error) {
     throw error;
   }
