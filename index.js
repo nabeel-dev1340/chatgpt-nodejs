@@ -9,7 +9,7 @@ dotenv.config();
 
 const API_KEY = process.env.OPENAI_API_KEY;
 const MODEL = "text-davinci-003";
-const allowedOrigins = ["https://wild-gray-goshawk-wrap.cyclic.app"];
+const allowedOrigins = ["https://wild-gray-goshawk-wrap.cyclic.app","http://localhost:3000"];
 
 const app = Express();
 app.use(bodyParser.json());
