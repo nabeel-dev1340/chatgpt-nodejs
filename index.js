@@ -53,8 +53,7 @@ app.get("/", async (req, res) => {
         },
       }
     );
-
-    res.send(response.data.choices[0].text);
+    res.send(JSON.parse(response.data.choices[0].text));
   } catch (error) {
     throw error;
   }
