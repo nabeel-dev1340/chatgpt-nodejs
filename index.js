@@ -9,25 +9,12 @@ dotenv.config();
 
 const API_KEY = process.env.OPENAI_API_KEY;
 const MODEL = "text-davinci-003";
-const allowedOrigins = [
-  "https://workout-ai-mocha.vercel.app",
-  "http://localhost:3000",
-];
 
 const app = Express();
+// middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-  })
-);
+app.use(cors());
 
 app.get("/", async (req, res) => {
   const TIME = req.query.time;
