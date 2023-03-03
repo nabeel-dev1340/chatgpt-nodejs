@@ -46,23 +46,24 @@ app.get("/", async (req, res) => {
       res.send(workoutPlanData);
     } else {
       const Prompt = `
-  Give me a ${TIME} minute workout plan for ${MUSCLE} at ${LOCATION} with ${EQUIPMENT}. Please include a warmup and cooldown. Also specify the time period for each exercise. Give the result in following json format:${FORMAT}. All these keys have array entry and please provide a valid json object`;
+  Give me a ${TIME} minute workout plan for ${MUSCLE} at ${LOCATION} with ${EQUIPMENT}. Please include a warmup and cooldown. Also specify the time period for each exercise. Give the result in following json format:${FORMAT}. Only JSON and no extra text and strictly follow the format. All these keys have array entry and please provide a valid json object`;
+      const headers = {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+      };
+
+      const data = {
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: Prompt }],
+      };
       const response = await axios.post(
-        "https://api.openai.com/v1/completions",
-        {
-          model: MODEL,
-          prompt: Prompt,
-          temperature: 0,
-          max_tokens: 400,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${API_KEY}`,
-          },
-        }
+        "https://api.openai.com/v1/chat/completions",
+        data,
+        { headers }
       );
-      const cleanedRes = removeUnwantedChars(response.data.choices[0].text);
+      const cleanedRes = removeUnwantedChars(
+        response.data.choices[0].message.content
+      );
       const workoutPlan = JSON.parse(cleanedRes);
 
       // inserting data into db
