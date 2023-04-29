@@ -34,6 +34,12 @@ app.get("/", async (req, res) => {
   const EQUIPMENT = req.query.equipment;
   const MUSCLE = req.query.muscle;
 
+  // check if required parameters are present
+  if (!TIME || !LOCATION || !EQUIPMENT || !MUSCLE) {
+    res.status(400).send("Missing one or more required parameters");
+    return;
+  }
+
   const key = `${MUSCLE}-${TIME}-${LOCATION}-${EQUIPMENT}`;
 
   try {
