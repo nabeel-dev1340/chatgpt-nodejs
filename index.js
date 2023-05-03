@@ -29,10 +29,10 @@ app.use(
 );
 
 app.get("/", async (req, res) => {
-  const TIME = req.query.time;
-  const LOCATION = req.query.location;
-  const EQUIPMENT = req.query.equipment;
-  const MUSCLE = req.query.muscle;
+  const TIME = req.query.time || 30;
+  const LOCATION = req.query.location || "none";
+  const EQUIPMENT = req.query.equipment || "none";
+  const MUSCLE = req.query.muscle || "none";
 
   // check if required parameters are present
   if (!TIME || !LOCATION || !EQUIPMENT || !MUSCLE) {
