@@ -1,1 +1,2 @@
-GET http://localhost:3030/?time=45&location=gym&equipment=dumbbells&muscle=biceps
+GET http://localhost:3030/?time=41&location=gym&equipment=dumbbells&muscle=biceps
+GET http://localhost:3030/customized?time=20&equipment=dumbbells,cables&muscle=biceps&fitness_level=advanced&fitness_goals=strength, muscle_growth
