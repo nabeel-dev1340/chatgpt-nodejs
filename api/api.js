@@ -30,7 +30,7 @@ app.get("/", async (req, res) => {
       res.send(workoutPlanData);
     } else {
       const Prompt = `
-  Give me a ${TIME} minute workout plan for ${MUSCLE} at ${LOCATION} with ${EQUIPMENT}. Please include a warmup and cooldown. Also specify the time period for each exercise. Give the result in following json format:${FORMAT}. Only JSON and no extra text and strictly follow the format. All these keys have array entry and please provide a valid json object`;
+  Give me a ${TIME} minute workout plan for ${MUSCLE} at ${LOCATION} with ${EQUIPMENT}. Please include a warmup and cooldown. Also specify the time period for each exercise. Give the result in following json format:${FORMAT}. Only JSON and no extra text and strictly follow the format. All these keys have array entry and please provide a valid json object. If you cannot generate plan, please give a valid json object explaining the error according to this schema {error:"description of error"}.`;
       const headers = {
         Authorization: `Bearer ${API_KEY}`,
         "Content-Type": "application/json",
@@ -89,7 +89,7 @@ app.get("/customized", async (req, res) => {
         });
       }
 
-      const Prompt = `Give me a ${TIME} minute workout plan for ${MUSCLE} with ${EQUIPMENT}. My fitness level is ${FITNESS_LEVEL} and my fitness goals are ${FITNESS_GOALS}. Please include a warmup and cooldown. Also specify the time period for each exercise. Give the result in the following JSON format: ${FORMAT}. Only JSON is allowed, and no extra text. Please strictly follow the format. All keys should have an array entry. Provide a valid JSON object.`;
+      const Prompt = `Give me a ${TIME} minute workout plan for ${MUSCLE} with ${EQUIPMENT}. My fitness level is ${FITNESS_LEVEL} and my fitness goals are ${FITNESS_GOALS}. Please include a warmup and cooldown. Also specify the time period for each exercise. Give the result in the following JSON format: ${FORMAT}. Only JSON is allowed, and no extra text. Please strictly follow the format. All keys should have an array entry. Provide a valid JSON object. If you cannot generate plan, please give a valid json object explaining the error according to this schema {error:"description of error"}.`;
       const headers = {
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         "Content-Type": "application/json",
