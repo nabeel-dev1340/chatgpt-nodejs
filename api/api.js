@@ -89,7 +89,7 @@ app.get("/customized", async (req, res) => {
         });
       }
 
-      const Prompt = `Give me a ${TIME} minute workout plan for ${MUSCLE} with ${EQUIPMENT}. My fitness level is ${FITNESS_LEVEL} and my fitness goals are ${FITNESS_GOALS}. Please include a warmup and cooldown. Also specify the time period for each exercise. Give the result in the following JSON format: ${FORMAT}. Only JSON is allowed, and no extra text or note. Please strictly follow the format. All keys should have an array entry. Provide a valid JSON object. If you cannot generate plan, please give a valid json object explaining the error according to this schema {error:"description of error"}.`;
+      const Prompt = `Give me a ${TIME} minute workout plan for ${MUSCLE} with ${EQUIPMENT}. My fitness level is ${FITNESS_LEVEL} and my fitness goals are ${FITNESS_GOALS}. Please include a warmup and cooldown. Also specify the time period for each exercise. Give the result in the following JSON format: ${FORMAT}. Give the result in proper json format, easy to parse (no extra text). Please strictly follow the format. All keys should have an array entry. Provide a valid JSON object. If you cannot generate plan, please give a valid json object explaining the error according to this schema {error:"description of error"}.`;
       const headers = {
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         "Content-Type": "application/json",
